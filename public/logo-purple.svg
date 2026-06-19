@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#5D28B8"/>
+  
+  <!-- SL Logo with purple fill -->
+  <g transform="translate(75, 75)">
+    <!-- S Letter -->
+    <path d="M 30 40 Q 20 40 20 50 Q 20 60 30 60 L 40 60 Q 50 60 50 70 Q 50 80 40 80 Q 30 80 20 75" 
+          fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- L Letter (rotated/stylized) -->
+    <path d="M 70 30 L 70 85 L 90 85" 
+          fill="none" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Accent triangle -->
+    <polygon points="85,30 115,30 85,60" fill="#A855F7"/>
+  </g>
+</svg>
