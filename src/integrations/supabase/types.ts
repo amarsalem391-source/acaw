@@ -284,7 +284,10 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+<<<<<<< HEAD
           student_code: string | null
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
           updated_at: string
           user_id: string
         }
@@ -294,7 +297,10 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+<<<<<<< HEAD
           student_code?: string | null
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
           updated_at?: string
           user_id: string
         }
@@ -304,7 +310,10 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+<<<<<<< HEAD
           student_code?: string | null
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
           updated_at?: string
           user_id?: string
         }
@@ -370,6 +379,7 @@ export type Database = {
         }
         Relationships: []
       }
+<<<<<<< HEAD
       certificates: {
         Row: {
           id: string
@@ -579,6 +589,8 @@ export type Database = {
           },
         ]
       }
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     }
     Views: {
       [_ in never]: never

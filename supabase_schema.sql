@@ -347,11 +347,15 @@ CREATE TABLE IF NOT EXISTS public.certificates (
 ALTER TABLE public.certificates ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "certificates_select" ON public.certificates;
 CREATE POLICY "certificates_select" ON public.certificates FOR SELECT TO authenticated 
+<<<<<<< HEAD
   USING (
     student_id = auth.uid()
     OR EXISTS (SELECT 1 FROM public.parent_children pc WHERE pc.student_id = certificates.student_id AND pc.parent_id = auth.uid())
     OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin')
   );
+=======
+  USING (student_id = auth.uid() OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin'));
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.certificates TO authenticated;
 GRANT ALL ON public.certificates TO service_role;
 
@@ -368,11 +372,15 @@ CREATE TABLE IF NOT EXISTS public.calendar_events (
 ALTER TABLE public.calendar_events ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "calendar_select" ON public.calendar_events;
 CREATE POLICY "calendar_select" ON public.calendar_events FOR SELECT TO authenticated 
+<<<<<<< HEAD
   USING (
     user_id = auth.uid()
     OR EXISTS (SELECT 1 FROM public.parent_children pc WHERE pc.student_id = calendar_events.user_id AND pc.parent_id = auth.uid())
     OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin')
   );
+=======
+  USING (user_id = auth.uid() OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin'));
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.calendar_events TO authenticated;
 GRANT ALL ON public.calendar_events TO service_role;
 
@@ -401,11 +409,15 @@ CREATE TABLE IF NOT EXISTS public.student_achievements (
 ALTER TABLE public.student_achievements ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "student_achievements_select" ON public.student_achievements;
 CREATE POLICY "student_achievements_select" ON public.student_achievements FOR SELECT TO authenticated 
+<<<<<<< HEAD
   USING (
     student_id = auth.uid()
     OR EXISTS (SELECT 1 FROM public.parent_children pc WHERE pc.student_id = student_achievements.student_id AND pc.parent_id = auth.uid())
     OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin')
   );
+=======
+  USING (student_id = auth.uid() OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin'));
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.student_achievements TO authenticated;
 GRANT ALL ON public.student_achievements TO service_role;
 
@@ -434,12 +446,17 @@ CREATE TABLE IF NOT EXISTS public.payments (
 ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "payments_select" ON public.payments;
 CREATE POLICY "payments_select" ON public.payments FOR SELECT TO authenticated 
+<<<<<<< HEAD
   USING (
     student_id = auth.uid()
     OR EXISTS (SELECT 1 FROM public.parent_children pc WHERE pc.student_id = payments.student_id AND pc.parent_id = auth.uid())
     OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin') 
     OR EXISTS (SELECT 1 FROM public.courses c WHERE c.id = payments.course_id AND c.instructor_id = auth.uid())
   );
+=======
+  USING (student_id = auth.uid() OR public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'super_admin') 
+    OR EXISTS (SELECT 1 FROM public.courses c WHERE c.id = payments.course_id AND c.instructor_id = auth.uid()));
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.payments TO authenticated;
 GRANT ALL ON public.payments TO service_role;
 

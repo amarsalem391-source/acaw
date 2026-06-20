@@ -13,12 +13,15 @@ export function usePlatformRole() {
     let active = true;
     if (authLoading) return;
     if (!user) { setRole(null); setLoading(false); return; }
+<<<<<<< HEAD
     if (user.id === "admin") {
       const isSuperAdminEmail = user.email === "acwadtechnology2026@gmail.com";
       setRole(isSuperAdminEmail ? "super_admin" : "admin");
       setLoading(false);
       return;
     }
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     (async () => {
       const { data } = await supabase
         .from("user_roles")

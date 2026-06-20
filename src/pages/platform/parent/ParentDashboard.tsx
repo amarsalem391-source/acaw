@@ -28,6 +28,7 @@ const items = [
   { label: "الدعم", path: "/platform/parent/support", icon: LifeBuoy },
 ];
 
+<<<<<<< HEAD
 async function loadParentChildren(parentId: string) {
   const { data: childRelations } = await supabase
     .from("parent_children")
@@ -45,6 +46,8 @@ async function loadParentChildren(parentId: string) {
   return childProfiles || [];
 }
 
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 function Home_() {
   const [stats, setStats] = useState({ children: 0, courses: 0, certs: 0 });
   const [parentName, setParentName] = useState("");
@@ -140,19 +143,52 @@ function Home_() {
 
 function Children() {
   const [children, setChildren] = useState<any[]>([]);
+<<<<<<< HEAD
   const [linkCode, setLinkCode] = useState("");
+=======
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
   const [busy, setBusy] = useState(false);
 
   const load = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+<<<<<<< HEAD
     const childProfiles = await loadParentChildren(user.id);
     setChildren(childProfiles);
+=======
+    // Load current children profiles
+    const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+    const childIds = (childRelations || []).map(r => r.student_id);
+
+    if (childIds.length > 0) {
+      const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+      setChildren(childProfiles || []);
+    } else {
+      setChildren([]);
+    }
+
+    // Load student roles to filter general profiles
+    const { data: studentRoles } = await supabase.from("user_roles").select("user_id").eq("role", "student");
+    const allStudentIds = (studentRoles || []).map(r => r.user_id);
+
+    // Filter out student profiles already linked
+    const availableStudentIds = allStudentIds.filter(id => !childIds.includes(id));
+
+    if (availableStudentIds.length > 0) {
+      const { data: availableProfiles } = await supabase.from("profiles").select("*").in("user_id", availableStudentIds);
+      setStudents(availableProfiles || []);
+    } else {
+      setStudents([]);
+    }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
   };
 
   useEffect(() => { load(); }, []);
 
+<<<<<<< HEAD
   const linkChild = async (e: React.FormEvent) => {
     e.preventDefault();
     const studentCode = linkCode.trim();
@@ -180,14 +216,34 @@ function Children() {
     const { error } = await supabase.from("parent_children").insert({
       parent_id: user.id,
       student_id: studentProf.user_id,
+=======
+  const link = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedStudentId) return;
+    setBusy(true);
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabase.from("parent_children").insert({
+      parent_id: user.id,
+      student_id: selectedStudentId
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     });
 
     setBusy(false);
     if (error) {
+<<<<<<< HEAD
       toast.error("حدث خطأ أثناء ربط حساب الابن. قد يكون الحساب مرتبطاً بالفعل.");
     } else {
       toast.success(`تم ربط ${studentProf.full_name || "الحساب"} بنجاح!`);
       setLinkCode("");
+=======
+      toast.error("حدث خطأ أثناء ربط الحساب. يرجى المحاولة لاحقاً.");
+    } else {
+      toast.success("تم ربط حساب الابن بالنجاح!");
+      setSelectedStudentId("");
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       load();
     }
   };
@@ -213,7 +269,11 @@ function Children() {
           <Card className="p-6 text-center text-muted-foreground bg-card/30">لم تقم بربط أي من حسابات الأبناء حتى الآن.</Card>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
+<<<<<<< HEAD
             {children.map((c) => (
+=======
+            {children.map(c => (
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
               <Card key={c.id} className="p-5 bg-card/40 border-border/40 flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
@@ -221,7 +281,10 @@ function Children() {
                   </div>
                   <div>
                     <h4 className="font-bold text-sm text-foreground">{c.full_name}</h4>
+<<<<<<< HEAD
                     <p className="text-[10px] text-muted-foreground mt-0.5">رمز الطالب: {c.student_code || "غير متوفر"}</p>
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
                     <p className="text-[10px] text-muted-foreground mt-0.5">رقم الهاتف: {c.phone || "غير مسجل"}</p>
                   </div>
                 </div>
@@ -240,6 +303,7 @@ function Children() {
             <UserPlus className="w-4 h-4 text-primary" />
             ربط حساب ابن جديد
           </h4>
+<<<<<<< HEAD
           <p className="text-[10px] text-muted-foreground mb-4">أدخل رمز الطالب الذي أعطاه لك ابنك لربط حسابه ومن ثم عرض بياناته في لوحة ولي الأمر.</p>
 
           <form onSubmit={linkChild} className="space-y-3">
@@ -255,6 +319,27 @@ function Children() {
             </div>
             <Button type="submit" className="w-full text-xs font-semibold" disabled={busy || !linkCode.trim()}>
               {busy ? "جاري الربط..." : "ربط الحساب بالكود"}
+=======
+          <p className="text-[10px] text-muted-foreground mb-4">اختر أحد الطلاب المسجلين بالمنصة لربط حسابه وتتبع أدائه الدراسي.</p>
+          
+          <form onSubmit={link} className="space-y-3">
+            <div>
+              <Label className="text-[10px]">اسم الطالب / الحساب</Label>
+              <select 
+                className="w-full mt-1 bg-background border border-input rounded-md h-9 px-3 text-xs" 
+                value={selectedStudentId} 
+                onChange={(e) => setSelectedStudentId(e.target.value)}
+                required
+              >
+                <option value="">-- اختر طالباً --</option>
+                {students.map(s => (
+                  <option key={s.user_id} value={s.user_id}>{s.full_name || s.user_id}</option>
+                ))}
+              </select>
+            </div>
+            <Button type="submit" className="w-full text-xs font-semibold" disabled={busy || !selectedStudentId}>
+              {busy ? "جاري الربط..." : "تأكيد ربط الحساب"}
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
             </Button>
           </form>
         </Card>
@@ -273,10 +358,22 @@ function Progress() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+<<<<<<< HEAD
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+      const childIds = (childRelations || []).map(r => r.student_id);
+
+      if (childIds.length > 0) {
+        const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+        setChildren(childProfiles || []);
+        if (childProfiles && childProfiles.length > 0) {
+          setSelectedChildId(childProfiles[0].user_id);
+        }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
@@ -335,17 +432,33 @@ function Progress() {
 function Grades() {
   const [children, setChildren] = useState<any[]>([]);
   const [selectedChildId, setSelectedChildId] = useState("");
+<<<<<<< HEAD
   const [gradeCourses, setGradeCourses] = useState<any[]>([]);
+=======
+  const [courses, setCourses] = useState<any[]>([]);
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+<<<<<<< HEAD
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+      const childIds = (childRelations || []).map(r => r.student_id);
+
+      if (childIds.length > 0) {
+        const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+        setChildren(childProfiles || []);
+        if (childProfiles && childProfiles.length > 0) {
+          setSelectedChildId(childProfiles[0].user_id);
+        }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
@@ -353,6 +466,7 @@ function Grades() {
   useEffect(() => {
     if (!selectedChildId) return;
     (async () => {
+<<<<<<< HEAD
       const { data: enrollments } = await supabase
         .from("enrollments")
         .select("*, courses(title)")
@@ -381,12 +495,17 @@ function Grades() {
         title: en.courses?.title || "دورة تعليمية",
         certificateAwarded: certifiedCourseIds.has(en.course_id),
       })));
+=======
+      const { data } = await supabase.from("enrollments").select("*, courses(title)").eq("student_id", selectedChildId);
+      setCourses(data || []);
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     })();
   }, [selectedChildId]);
 
   return (
     <div className="space-y-4 text-xs">
       <div className="flex items-center justify-between mb-4">
+<<<<<<< HEAD
         <h3 className="font-bold text-lg border-r-2 border-primary pr-2">سجل تقدم الأبناء والدورات</h3>
         {children.length > 0 && (
           <select
@@ -395,12 +514,23 @@ function Grades() {
             onChange={(e) => setSelectedChildId(e.target.value)}
           >
             {children.map((c) => (
+=======
+        <h3 className="font-bold text-lg border-r-2 border-primary pr-2">سجل درجات الاختبارات والواجبات</h3>
+        {children.length > 0 && (
+          <select 
+            className="bg-background border border-input rounded p-1 text-xs" 
+            value={selectedChildId} 
+            onChange={(e) => setSelectedChildId(e.target.value)}
+          >
+            {children.map(c => (
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
               <option key={c.user_id} value={c.user_id}>{c.full_name}</option>
             ))}
           </select>
         )}
       </div>
 
+<<<<<<< HEAD
       {gradeCourses.length === 0 ? (
         <Card className="p-6 text-center text-muted-foreground bg-card/30">لا توجد بيانات تقدم مسجلة لهذا الحساب.</Card>
       ) : (
@@ -424,6 +554,41 @@ function Grades() {
               <div className="grid sm:grid-cols-2 gap-3 text-[10px] text-muted-foreground">
                 <div>تاريخ التسجيل: {new Date(course.enrolled_at).toLocaleDateString("ar-EG")}</div>
                 <div>شهادة: {course.certificateAwarded ? "صدرت" : "لم تُصدر بعد"}</div>
+=======
+      {courses.length === 0 ? (
+        <Card className="p-6 text-center text-muted-foreground bg-card/30">لا توجد درجات مسجلة حالياً.</Card>
+      ) : (
+        <div className="space-y-3">
+          {courses.map(c => (
+            <Card key={c.id} className="p-5 bg-card/40 border-border/40 space-y-4">
+              <div className="flex justify-between items-center border-b border-border/20 pb-2">
+                <h4 className="font-bold text-sm text-foreground">{c.courses?.title}</h4>
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">التقدير العام: ممتاز</span>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center bg-background/30 p-2.5 rounded border border-border/10">
+                  <div>
+                    <span className="font-semibold text-foreground">الواجب 1: أساسيات البرمجة</span>
+                    <span className="block text-[9px] text-muted-foreground mt-0.5">تاريخ التسليم: منذ أسبوع</span>
+                  </div>
+                  <span className="font-bold text-primary">95 / 100</span>
+                </div>
+                <div className="flex justify-between items-center bg-background/30 p-2.5 rounded border border-border/10">
+                  <div>
+                    <span className="font-semibold text-foreground">الواجب 2: بناء واجهات المستخدم</span>
+                    <span className="block text-[9px] text-muted-foreground mt-0.5">تاريخ التسليم: منذ 3 أيام</span>
+                  </div>
+                  <span className="font-bold text-primary">90 / 100</span>
+                </div>
+                <div className="flex justify-between items-center bg-background/30 p-2.5 rounded border border-border/10">
+                  <div>
+                    <span className="font-semibold text-foreground">الاختبار النصفي</span>
+                    <span className="block text-[9px] text-muted-foreground mt-0.5">تاريخ التسليم: أمس</span>
+                  </div>
+                  <span className="font-bold text-primary">88 / 100</span>
+                </div>
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
               </div>
             </Card>
           ))}
@@ -443,10 +608,22 @@ function Certificates() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+<<<<<<< HEAD
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+      const childIds = (childRelations || []).map(r => r.student_id);
+
+      if (childIds.length > 0) {
+        const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+        setChildren(childProfiles || []);
+        if (childProfiles && childProfiles.length > 0) {
+          setSelectedChildId(childProfiles[0].user_id);
+        }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
@@ -515,10 +692,22 @@ function Payments() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+<<<<<<< HEAD
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+      const childIds = (childRelations || []).map(r => r.student_id);
+
+      if (childIds.length > 0) {
+        const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+        setChildren(childProfiles || []);
+        if (childProfiles && childProfiles.length > 0) {
+          setSelectedChildId(childProfiles[0].user_id);
+        }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
@@ -674,14 +863,27 @@ function AiInsights() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+<<<<<<< HEAD
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      const { data: childRelations } = await supabase.from("parent_children").select("student_id").eq("parent_id", user.id);
+      const childIds = (childRelations || []).map(r => r.student_id);
+
+      if (childIds.length > 0) {
+        const { data: childProfiles } = await supabase.from("profiles").select("*").in("user_id", childIds);
+        setChildren(childProfiles || []);
+        if (childProfiles && childProfiles.length > 0) {
+          setSelectedChildId(childProfiles[0].user_id);
+        }
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
 
+<<<<<<< HEAD
   const generate = async () => {
     if (!selectedChildId) return;
     setLoading(true);
@@ -709,6 +911,16 @@ function AiInsights() {
 
     setLoading(false);
     toast.success("تم تحليل مستوى أداء الطالب بنجاح!");
+=======
+  const generate = () => {
+    setLoading(true);
+    setInsight("");
+    setTimeout(() => {
+      setInsight("بناءً على تحليلات الذكاء الاصطناعي ومعدل إنجاز الطالب للدروس والواجبات:\n\n1. يُبدي الطالب اهتماماً ومهارة عالية جداً في دروس الجافا سكريبت العملية.\n2. لوحظ وجود تأخر طفيف في تسليم واجب تصميم واجهات CSS، ننصح بتشجيعه للمتابعة اليومية.\n3. معدل التفاعل العام ممتاز 92% وهو أعلى من متوسط المنصة بـ 15%.\n\nتوصية الذكاء الاصطناعي: تشجيع الطالب للمشاركة في مسابقات المنصة القادمة لتنمية مهارات التحدي.");
+      setLoading(false);
+      toast.success("تم تحليل مستوى أداء الطالب بنجاح!");
+    }, 1500);
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
   };
 
   return (
@@ -757,23 +969,40 @@ function AiInsights() {
 }
 
 function Calendar() {
+<<<<<<< HEAD
   const [children, setChildren] = useState<any[]>([]);
   const [selectedChildId, setSelectedChildId] = useState("");
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+<<<<<<< HEAD
 
       const childProfiles = await loadParentChildren(user.id);
       setChildren(childProfiles);
       if (childProfiles && childProfiles.length > 0) {
         setSelectedChildId(childProfiles[0].user_id);
+=======
+      
+      const { data } = await supabase.from("calendar_events").select("*").eq("user_id", user.id).order("start_date", { ascending: true });
+      if (data && data.length > 0) {
+        setEvents(data);
+      } else {
+        // default events
+        setEvents([
+          { id: "1", title: "بدء اختبارات نصف العام البرمجية", start_date: new Date().toISOString(), description: "اختبارات عملية في لغة جافا سكريبت React." },
+          { id: "2", title: "جلسة إرشادية مباشرة مع معمل الكورس", start_date: new Date(Date.now() + 86400000 * 2).toISOString(), description: "لقاء تفاعلي لمراجعة المشاريع البرمجية." }
+        ]);
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       }
     })();
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!selectedChildId) return;
     (async () => {
@@ -820,6 +1049,24 @@ function Calendar() {
             </Card>
           ))
         )}
+=======
+  return (
+    <div className="space-y-4 text-xs">
+      <h3 className="font-bold text-lg border-r-2 border-primary pr-2">التقويم الدراسي والأحداث القادمة</h3>
+      <div className="grid gap-3">
+        {events.map(ev => (
+          <Card key={ev.id} className="p-4 bg-card/40 border-border/40 flex gap-4 items-center">
+            <div className="bg-primary/10 text-primary border border-primary/20 p-3 rounded-lg flex flex-col items-center justify-center font-bold w-16">
+              <span>{new Date(ev.start_date).getDate()}</span>
+              <span className="text-[9px]">{new Date(ev.start_date).toLocaleString("ar-EG", { month: "short" })}</span>
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-foreground">{ev.title}</h4>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{ev.description}</p>
+            </div>
+          </Card>
+        ))}
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
       </div>
     </div>
   );

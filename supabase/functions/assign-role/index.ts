@@ -43,7 +43,6 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    // Remove any existing platform roles for user, then insert the chosen one
     await admin.from('user_roles').delete().eq('user_id', userId).in('role', allowed);
     const { error: insErr } = await admin.from('user_roles').insert({ user_id: userId, role: requested });
     if (insErr) {

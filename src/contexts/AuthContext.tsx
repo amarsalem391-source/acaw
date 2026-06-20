@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+<<<<<<< HEAD
   // Admin backdoor code: set VITE_ADMIN_CODE in your .env to enable
   const ADMIN_CODE = (import.meta.env.VITE_ADMIN_CODE as string) ?? "admin1234";
   // Development admin emails that should bypass Supabase auth (dev-only)
@@ -24,6 +25,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     "acwadtechnology2026@gmail.com",
     "admin2026@gmail.com",
   ];
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -46,6 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+<<<<<<< HEAD
     // If the email is one of the admin emails, bypass Supabase (dev-only)
     if (ADMIN_EMAILS.includes(email)) {
       const adminUser = ({ id: "admin", email } as unknown) as User;
@@ -64,6 +68,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       return { error: null };
     }
+=======
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,

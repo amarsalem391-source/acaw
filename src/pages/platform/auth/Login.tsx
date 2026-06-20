@@ -24,18 +24,27 @@ export default function PlatformLogin() {
 
   const signInWithGoogle = async () => {
     try {
+<<<<<<< HEAD
       const { data, error } = await supabase.auth.signInWithOAuth({
+=======
+      const { error } = await supabase.auth.signInWithOAuth({
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/platform/login`,
         }
       });
       if (error) throw error;
+<<<<<<< HEAD
       if (data?.url) {
         window.location.href = data.url;
       }
     } catch (e: any) {
       toast.error(e.message || "حدث خطأ أثناء تسجيل الدخول باستخدام Google");
+=======
+    } catch (e: any) {
+      toast.error(e.message);
+>>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
     }
   };
 
