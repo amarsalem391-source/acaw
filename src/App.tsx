@@ -65,7 +65,7 @@ const App = () => (
                 <Route path="/platform/student/*" element={<RoleGuard allow={["student"]}><StudentDashboard /></RoleGuard>} />
                 <Route path="/platform/instructor/*" element={<RoleGuard allow={["instructor"]}><InstructorDashboard /></RoleGuard>} />
                 <Route path="/platform/parent/*" element={<RoleGuard allow={["parent"]}><ParentDashboard /></RoleGuard>} />
-                <Route path="/platform/admin/*" element={<RoleGuard allow={["admin", "super_admin"]}><AdminDashboard /></RoleGuard>} />
+                <Route path="/platform/admin/*" element={<RoleGuard allow={["super_admin"]}><SuperAdminDashboard /></RoleGuard>} />
                 <Route path="/platform/super-admin/*" element={<RoleGuard allow={["super_admin"]}><SuperAdminDashboard /></RoleGuard>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

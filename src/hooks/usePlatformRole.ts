@@ -12,36 +12,42 @@ export function usePlatformRole() {
   useEffect(() => {
     let active = true;
     if (authLoading) return;
-    if (!user) { setRole(null); setLoading(false); return; }
-<<<<<<< HEAD
-    if (user.id === "admin") {
-      const isSuperAdminEmail = user.email === "acwadtechnology2026@gmail.com";
-      setRole(isSuperAdminEmail ? "super_admin" : "admin");
+
+    if (!user) {
+      setRole(null);
       setLoading(false);
       return;
     }
-=======
->>>>>>> 2ab3519afb635d773e3f1ec3d80b06c5512f63a7
+
     (async () => {
+      // 1) Get role from DB
       const { data } = await supabase
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id);
+
       if (!active) return;
-      const roles = (data || []).map((r: any) => r.role as string);
-      const priority = ["super_admin", "admin", "instructor", "parent", "student"];
+
+      const roles = (data || []).map((r: any) => String(r.role).toLowerCase());
+      const priority = ["super_admin", "admin", "instructor", "parent", "student"] as const;
+
       let found = priority.find((p) => roles.includes(p)) as PlatformRole | undefined;
 
+      // 2) Optional auto-assign from metadata (if role not found)
       if (!found && user.user_metadata?.role) {
         try {
+          const requestedRole = String(user.user_metadata.role).toLowerCase();
+          const requestedCode = String(user.user_metadata.role_code || "");
+
           const { data: res } = await supabase.functions.invoke("assign-role", {
-            body: { 
-              role: user.user_metadata.role,
-              code: user.user_metadata.role_code
-            }
+            body: {
+              role: requestedRole,
+              code: requestedCode,
+            },
           });
-          if (res && !res.error) {
-            found = user.user_metadata.role as PlatformRole;
+
+          if (res && !(res as any).error) {
+            found = requestedRole as PlatformRole;
           }
         } catch (err) {
           console.error("Error auto-assigning role:", err);
@@ -51,7 +57,10 @@ export function usePlatformRole() {
       setRole(found ?? null);
       setLoading(false);
     })();
-    return () => { active = false; };
+
+    return () => {
+      active = false;
+    };
   }, [user, authLoading]);
 
   return { role, loading: loading || authLoading };
@@ -59,11 +68,18 @@ export function usePlatformRole() {
 
 export function dashboardPathFor(role: PlatformRole): string {
   switch (role) {
-    case "super_admin": return "/platform/super-admin";
-    case "admin": return "/platform/admin";
-    case "instructor": return "/platform/instructor";
-    case "parent": return "/platform/parent";
-    case "student": return "/platform/student";
-    default: return "/platform/login";
+    case "super_admin":
+      return "/platform/super-admin";
+    case "admin":
+      return "/platform/super-admin"; // admins should live under super-admin
+    case "instructor":
+      return "/platform/instructor";
+    case "parent":
+      return "/platform/parent";
+    case "student":
+      return "/platform/student";
+    default:
+      return "/platform/login";
   }
 }
+
