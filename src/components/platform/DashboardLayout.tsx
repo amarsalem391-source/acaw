@@ -18,28 +18,34 @@ export default function DashboardLayout({
 
   return (
     <div dir="rtl" className="min-h-screen flex w-full bg-background text-foreground">
-      <aside className="w-64 border-l border-border/40 bg-card/40 backdrop-blur-xl flex flex-col">
-        <div className="p-4 border-b border-border/40">
+      <aside className="w-64 border-l border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col shadow-xl z-20">
+        <div className="p-5 border-b border-sidebar-border">
           <div className="flex items-center gap-2"><Logo /></div>
-          <div className="mt-3">
-            <div className="text-xs text-muted-foreground">{badge ?? "Acwad Learning"}</div>
-            <div className="font-semibold">{title}</div>
+          <div className="mt-4 bg-primary/10 p-2.5 rounded-lg border border-primary/20">
+            <div className="text-[10px] uppercase tracking-wider text-primary font-bold">{badge ?? "Acwad Learning"}</div>
+            <div className="font-bold text-sm text-sidebar-foreground mt-0.5">{title}</div>
           </div>
         </div>
-        <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+        <nav className="flex-1 overflow-y-auto p-3 space-y-1.5">
           {items.map((it) => {
             const active = pathname === it.path || pathname.startsWith(it.path + "/");
             const Icon = it.icon;
             return (
               <NavLink key={it.path} to={it.path}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${active ? "bg-primary/15 text-primary" : "hover:bg-muted/50 text-foreground/80"}`}>
-                <Icon className="w-4 h-4" />
+                className={`flex items-center gap-3 py-2.5 text-sm transition-all duration-200 ${
+                  active 
+                    ? "bg-primary/15 text-primary border-r-4 border-primary pr-2 pl-3 rounded-l-lg rounded-r-none font-semibold shadow-sm" 
+                    : "hover:bg-sidebar-accent/50 text-sidebar-foreground/80 hover:text-sidebar-foreground px-3 rounded-lg"
+                }`}>
+                <Icon className={`w-4.5 h-4.5 ${active ? "text-primary" : "text-sidebar-foreground/60"}`} />
                 <span>{it.label}</span>
               </NavLink>
             );
           })}
         </nav>
-        <div className="p-3 border-t border-border/40 text-xs text-muted-foreground truncate">{user?.email}</div>
+        <div className="p-4 border-t border-sidebar-border text-xs text-sidebar-foreground/50 truncate font-mono bg-sidebar-background/40">
+          {user?.email}
+        </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
